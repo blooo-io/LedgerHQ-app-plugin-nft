@@ -8,8 +8,21 @@ void handle_query_contract_id(void *parameters) {
 
     switch (context->selectorIndex) {
         case MINT:
-            strlcpy(msg->version, "Mint", msg->versionLength);
-            break;
+            if (memcmp((uint8_t *) PIC(LEDGER_NFT_CONTRACTS[MULTI_MINT_CONTRACT_NFT]),
+                       msg->pluginSharedRO->txContent->destination,
+                       ADDRESS_LENGTH) == 0) {
+                strlcpy(msg->version, "MultiMintContractNFT - Mint", msg->versionLength);
+                break;
+            } else if (memcmp((uint8_t *) PIC(LEDGER_NFT_CONTRACTS[STABLE_MULTI_MINT_ERC_721]),
+                              msg->pluginSharedRO->txContent->destination,
+                              ADDRESS_LENGTH) == 0) {
+                strlcpy(msg->version, "StableMultiMintERC721 - Mint", msg->versionLength);
+                break;
+            } else {
+                PRINTF("Unsupported contract address\n");
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+                return;
+            }
         case PRE_SALE_MINT:
             strlcpy(msg->version, "Presale Mint", msg->versionLength);
             break;
@@ -20,13 +33,10 @@ void handle_query_contract_id(void *parameters) {
             strlcpy(msg->version, "Stable Mint", msg->versionLength);
             break;
         case MINT_SIGN:
-            strlcpy(msg->version, "Mint Sign", msg->versionLength);
-            break;
-        case MINT_V2:
-            strlcpy(msg->version, "Mint", msg->versionLength);
+            strlcpy(msg->version, "StableMultiMintERC721 - Mint Sign", msg->versionLength);
             break;
         case MINT_SIGN_V2:
-            strlcpy(msg->version, "Mint Sign", msg->versionLength);
+            strlcpy(msg->version, "MultiMint1155 - Mint Sign", msg->versionLength);
             break;
         case BID:
             strlcpy(msg->version, "Bid", msg->versionLength);

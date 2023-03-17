@@ -55,7 +55,6 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
         case STABLE_MINT_SIGN:
         case STABLE_MINT:
         case MINT_SIGN:
-        case MINT_V2:
             switch (index) {
                 case 0:
                     return AMOUNT_SCREEN;
