@@ -2,8 +2,8 @@ import { processTest, populateTransaction } from "./test.fixture";
 
 const contractName = "StableMultiMintERC721";
 
-const testLabel = "mintV2"; // <= Name of the test
-const testDirSuffix = "mint_v2"; // <= directory to compare device snapshots to
+const testLabel = "mintSMM721"; // <= Name of the test
+const testDirSuffix = "mint_smm721"; // <= directory to compare device snapshots to
 const signedPlugin = false;
 const testNetwork = "ethereum_goerli";
 
