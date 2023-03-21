@@ -96,6 +96,18 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
                     return ERROR;
             }
             break;
+        case MINT_V2:
+            switch (index) {
+                case 0:
+                    return TOKEN_ID_SCREEN;
+                case 1:
+                    return AMOUNT_SCREEN;
+                case 2:
+                    return PAYABLE_AMOUNT_SCREEN;
+                default:
+                    return ERROR;
+            }
+            break;
         default:
             PRINTF("Selector index: %d not supported\n", context->selectorIndex);
             return ERROR;
