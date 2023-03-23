@@ -102,3 +102,20 @@ static inline void printf_hex_array(const char *title __attribute__((unused)),
     };
     PRINTF("\n");
 }
+
+static inline bool is_destination_address(const uint8_t *contract, uint8_t *destination) {
+    if (memcmp((uint8_t *) PIC(contract), destination, ADDRESS_LENGTH) == 0) {
+        return true;
+    }
+    return false;
+}
+
+static inline bool is_tx_contract_address_supported(uint8_t *destination) {
+    for (int i = 0; i < NUM_CONTRACTS; i++) {
+        if (is_destination_address(LEDGER_NFT_CONTRACTS[i], destination)) {
+            PRINTF("Contract 0x%.*H supported\n", ADDRESS_LENGTH, destination);
+            return true;
+        }
+    }
+    return false;
+}
