@@ -8,18 +8,18 @@ void handle_query_contract_id(void *parameters) {
 
     switch (context->selectorIndex) {
         case MINT:
-            if (memcmp((uint8_t *) PIC(LEDGER_NFT_CONTRACTS[MULTI_MINT_CONTRACT_NFT]),
-                       msg->pluginSharedRO->txContent->destination,
-                       ADDRESS_LENGTH) == 0) {
+            if (is_destination_address(LEDGER_NFT_CONTRACTS[MULTI_MINT_CONTRACT_NFT],
+                                       msg->pluginSharedRO->txContent->destination)) {
                 strlcpy(msg->version, "MultiMintContractNFT - Mint", msg->versionLength);
                 break;
-            } else if (memcmp((uint8_t *) PIC(LEDGER_NFT_CONTRACTS[STABLE_MULTI_MINT_ERC_721]),
-                              msg->pluginSharedRO->txContent->destination,
-                              ADDRESS_LENGTH) == 0) {
+            } else if (is_destination_address(LEDGER_NFT_CONTRACTS[STABLE_MULTI_MINT_ERC_721],
+                                              msg->pluginSharedRO->txContent->destination)) {
                 strlcpy(msg->version, "StableMultiMintERC721 - Mint", msg->versionLength);
                 break;
             } else {
-                PRINTF("Unsupported contract address\n");
+                PRINTF("Contract 0x%.*H unsupported\n",
+                       ADDRESS_LENGTH,
+                       msg->pluginSharedRO->txContent->destination);
                 msg->result = ETH_PLUGIN_RESULT_ERROR;
                 return;
             }
