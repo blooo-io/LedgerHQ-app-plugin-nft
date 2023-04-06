@@ -35,11 +35,11 @@ static void set_auction_id_ui(ethQueryContractUI_t *msg, context_t *context) {
     amountToString(context->token_id, sizeof(context->token_id), 0, "", msg->msg, msg->msgLength);
 }
 
-static void set_address_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "Address", msg->titleLength);
+static void set_address_ui(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Contract", msg->titleLength);
     msg->msg[0] = '0';
     msg->msg[1] = 'x';
-    getEthAddressStringFromBinary((uint8_t *) context->address,
+    getEthAddressStringFromBinary((uint8_t *) msg->pluginSharedRO->txContent->destination,
                                   msg->msg + 2,
                                   msg->pluginSharedRW->sha3,
                                   0);
@@ -57,8 +57,10 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
         case MINT_SIGN:
             switch (index) {
                 case 0:
-                    return AMOUNT_SCREEN;
+                    return ADDRESS_SCREEN;
                 case 1:
+                    return AMOUNT_SCREEN;
+                case 2:
                     return PAYABLE_AMOUNT_SCREEN;
                 default:
                     return ERROR;
@@ -67,13 +69,13 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
         case MINT_SIGN_V2:
             switch (index) {
                 case 0:
-                    return TOKEN_ID_SCREEN;
-                case 1:
-                    return AMOUNT_SCREEN;
-                case 2:
-                    return PAYABLE_AMOUNT_SCREEN;
-                case 3:
                     return ADDRESS_SCREEN;
+                case 1:
+                    return TOKEN_ID_SCREEN;
+                case 2:
+                    return AMOUNT_SCREEN;
+                case 3:
+                    return PAYABLE_AMOUNT_SCREEN;
                 default:
                     return ERROR;
             }
@@ -81,8 +83,10 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
         case BID:
             switch (index) {
                 case 0:
-                    return AUCTION_ID_SCREEN;
+                    return ADDRESS_SCREEN;
                 case 1:
+                    return AUCTION_ID_SCREEN;
+                case 2:
                     return PAYABLE_AMOUNT_SCREEN;
                 default:
                     return ERROR;
@@ -91,6 +95,8 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
         case FINALIZE_AUCTION:
             switch (index) {
                 case 0:
+                    return ADDRESS_SCREEN;
+                case 1:
                     return AUCTION_ID_SCREEN;
                 default:
                     return ERROR;
@@ -99,10 +105,12 @@ static screens_t get_screen(const ethQueryContractUI_t *msg,
         case MINT_V2:
             switch (index) {
                 case 0:
-                    return TOKEN_ID_SCREEN;
+                    return ADDRESS_SCREEN;
                 case 1:
-                    return AMOUNT_SCREEN;
+                    return TOKEN_ID_SCREEN;
                 case 2:
+                    return AMOUNT_SCREEN;
+                case 3:
                     return PAYABLE_AMOUNT_SCREEN;
                 default:
                     return ERROR;
@@ -134,7 +142,7 @@ void handle_query_contract_ui(void *parameters) {
             set_amount_ui(msg, context);
             break;
         case ADDRESS_SCREEN:
-            set_address_ui(msg, context);
+            set_address_ui(msg);
             break;
         case AUCTION_ID_SCREEN:
             set_auction_id_ui(msg, context);
