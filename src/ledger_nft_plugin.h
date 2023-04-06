@@ -34,7 +34,7 @@ typedef enum {
     OFFSET,
     TOKEN_ID,
     AUCTION_ID,
-    ADDRESS,
+    NB_TOKENS,
     SKIP,
     SKIP_2,
     NONE,
@@ -64,7 +64,7 @@ typedef struct context_t {
     uint8_t amount[PARAMETER_LENGTH];
     uint8_t token_id[PARAMETER_LENGTH];
     uint8_t payable_amount[PARAMETER_LENGTH];
-    uint8_t address[ADDRESS_LENGTH];
+    uint16_t nb_tokens;  // Assuming that the number of elements in args is less than 2^16.
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];
 

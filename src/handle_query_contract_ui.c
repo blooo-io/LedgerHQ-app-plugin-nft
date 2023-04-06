@@ -20,7 +20,20 @@ static void set_payable_amount_ui(ethQueryContractUI_t *msg, context_t *context)
 static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Quantity", msg->titleLength);
 
-    amountToString(context->amount, sizeof(context->amount), 0, "", msg->msg, msg->msgLength);
+    if (context->selectorIndex == MINT_SIGN_V2) {
+        // Convert the amount to a uint32_t
+        uint32_t amountInt = U4BE(context->amount, PARAMETER_LENGTH - sizeof(amountInt));
+        // Multiply by the amount by the number of tokens (there should never be a transaction with
+        // multiple tokens with different amounts)
+        amountInt *= context->nb_tokens;
+        // Convert the amount back to a uint8_t[32] buffer
+        uint8_t amountBuffer[PARAMETER_LENGTH] = {0};
+        U4BE_ENCODE(amountBuffer, sizeof(amountBuffer) - sizeof(amountInt), amountInt);
+
+        amountToString(amountBuffer, sizeof(amountBuffer), 0, "", msg->msg, msg->msgLength);
+    } else {
+        amountToString(context->amount, sizeof(context->amount), 0, "", msg->msg, msg->msgLength);
+    }
 }
 
 static void set_token_id_ui(ethQueryContractUI_t *msg, context_t *context) {
